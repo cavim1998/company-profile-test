@@ -3,8 +3,8 @@
 import { useEffect } from 'react'
 import { useParams } from "next/navigation"
 import { useBlog } from "@/stores/Blog"
+import { setDate } from '@/lib/helper'
 import Image from "next/image"
-import moment from "moment"
 
 const BlogDetailPage = () => {
   const params = useParams()
@@ -39,7 +39,7 @@ const BlogDetailPage = () => {
       <div className="flex items-center gap-3 mb-6 text-sm text-gray-500">
         <span>By {detailBlog.author}</span>
         <span>•</span>
-        <span>{moment(detailBlog.created).format('MMMM DD, YYYY')}</span>
+        <span>{setDate(detailBlog.created)}</span>
       </div>
 
       <article className="prose prose-lg max-w-none text-gray-700 leading-relaxed">

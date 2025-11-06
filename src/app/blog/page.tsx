@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react'
 import { useBlog } from "@/stores/Blog"
+import { setDate } from '@/lib/helper'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
-import moment from 'moment'
 import { Input } from '@/components/ui/input'
 
 const BlogListPage = () => {
@@ -57,7 +57,7 @@ const BlogListPage = () => {
                       {blog.title}
                     </CardTitle>
                     <p className="text-sm text-gray-500 mt-1">
-                      By {blog.author} • {moment(blog.created).format('MMMM DD, YYYY')}
+                      By {blog.author} • {setDate(blog.created)}
                     </p>
                   </CardHeader>
                   <CardContent>
