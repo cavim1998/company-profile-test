@@ -1,46 +1,54 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect } from 'react'
+import { useBlog } from "@/stores/Blog"
+import { useUser } from '@/stores/Users'
 import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 
+const formSchema = z.object({
+  title: z.string().min(10, 'Title must be at least 10 characters'),
+  category: z.string().min(3, 'Title must be at least 3 characters'),
+  description: z.string().min(10, 'Title must be at least 10 characters'),
+  content: z.string().min(10, 'Title must be at least 10 characters'),
+  thumbnail: z.string().min(10, 'Title must be at least 1 characters'),
+})
+
 const CreateBlogPage = () => {
   const router = useRouter()
+  const storeBlog = useBlog()
+  const storeUser = useUser()
 
-  // Simulasi user login
-  const isLoggedIn = true // nanti diganti dengan auth check dari Backendless
-
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
-  const [tags, setTags] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!isLoggedIn) {
-      router.push("/login")
-      return
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
     }
+  }, [])
 
-    setIsSubmitting(true)
-
-    // Simulasi kirim data ke Backendless
-    setTimeout(() => {
-      console.log({
-        title,
-        content,
-        tags,
-      })
-
-      setIsSubmitting(false)
-      alert("Blog successfully created!")
-      router.push("/blog")
-    }, 1000)
+  const { register, handleSubmit, formState: {errors} } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema)
+  })
+  
+  const makeArticle = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const response = await storeBlog.postArticle({ ...data, author: storeUser.dataUser.name})
+      if (response !== undefined) {
+        alert('Success Create Article')
+        router.push('/')
+      } else {
+        alert("Invalid Data")
+      }
+    } catch (error) {
+      alert('Failed Create Article')
+    }
   }
 
   return (
@@ -54,46 +62,46 @@ const CreateBlogPage = () => {
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  placeholder="Enter blog title"
-                  value={title}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-                  required
-                />
+            <form className="space-y-6" onSubmit={handleSubmit(makeArticle)}>
+              <div className="space-y-3">
+                <Label>Title</Label>
+                <Input {...register('title')} placeholder='Title' type="text" />
+                {errors.title ? <p className="text-sm text-red-500">{errors.title.message}</p> : null}
               </div>
 
-              <div>
-                <Label htmlFor="content">Content</Label>
+              <div className="space-y-3">
+                <Label>Category</Label>
+                <Input {...register('category')} placeholder='Category' type="text" />
+                {errors.category ? <p className="text-sm text-red-500">{errors.category.message}</p> : null}
+              </div>
+
+              <div className="space-y-3">
+                <Label>Short Description</Label>
+                <Input {...register('description')} placeholder='Short Description' type="text" />
+                {errors.description ? <p className="text-sm text-red-500">{errors.description.message}</p> : null}
+              </div>
+
+              <div className='space-y-3'>
+                <Label>Content</Label>
                 <Textarea
-                  id="content"
+                  {...register('content')}
                   placeholder="Write your blog content here..."
                   rows={6}
-                  value={content}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-                  required
                 />
+                {errors.content ? <p className="text-sm text-red-500">{errors.content.message}</p> : null}
               </div>
 
-              <div>
-                <Label htmlFor="tags">Tags</Label>
-                <Input
-                  id="tags"
-                  placeholder="e.g. tech, innovation"
-                  value={tags}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTags(e.target.value)}
-                />
+              <div className='space-y-3'>
+                <Label>Thumbnail</Label>
+                <Input {...register('thumbnail')} placeholder='Thumbnail' type="text" />
+                {errors.thumbnail ? <p className="text-sm text-red-500">{errors.thumbnail.message}</p> : null}
               </div>
-
+          
               <Button
-                type="submit"
-                disabled={isSubmitting}
+                disabled={storeBlog.isLoading}
                 className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg"
               >
-                {isSubmitting ? "Submitting..." : "Publish Blog"}
+                { storeBlog.isLoading ? 'Submitting...' : 'Publish Blog' }
               </Button>
             </form>
           </CardContent>

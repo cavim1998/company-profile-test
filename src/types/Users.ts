@@ -2,6 +2,7 @@ export interface UserTypes {
   dataUser: UserDataTypes
   isLoading: boolean
   callSingIn: (data: ParamSignIn) => void
+  callCurrentUser: () => void
 }
 
 export interface ParamSignIn {

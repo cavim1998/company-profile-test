@@ -1,17 +1,23 @@
 "use client"
 
 import Link from "next/link"
-import { useUser } from '@/stores/Users'
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
 
-export default function Navbar() {
-  const storeUser = useUser()
+const Navbar = () => {
   const pathname = usePathname()
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false)
+  const [tokenUser, setTokenUser] = useState<string>('')
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const token = localStorage.getItem('token')
+      setTokenUser(token || '')
+    })
+  }, [])
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -55,7 +61,7 @@ export default function Navbar() {
         {/* Login Button (Desktop Only) */}
         <div className="hidden md:block">
           {
-            !storeUser.dataUser.name ?
+            !tokenUser ?
             <Link href="/login">
               <Button
                 variant="outline"
@@ -109,7 +115,7 @@ export default function Navbar() {
           ))}
 
           {
-            !storeUser.dataUser.name ?
+            !tokenUser ?
             <Link href="/login" onClick={() => setMobileOpen(false)}>
               <Button className="w-full bg-[#00B14F] text-white rounded-full hover:bg-[#009444] transition">
                 Login
@@ -127,3 +133,5 @@ export default function Navbar() {
     </nav>
   )
 }
+
+export default Navbar

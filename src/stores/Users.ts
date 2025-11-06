@@ -17,11 +17,28 @@ export const useUser = create<UserTypes>((set, get) => ({
         ...data
       })
       set({ dataUser: response.data as UserDataTypes })
+      const { dataUser } = get()
+      localStorage.setItem('userId', dataUser.objectId)
+      localStorage.setItem('token', dataUser['user-token'])
       return response.data
     } catch (error) {
       console.log(error)
     } finally {
       set({ isLoading: false })
+    }
+  },
+  callCurrentUser: async () => {
+    try {
+      const tokenUser = localStorage.getItem('token')
+      const userId = localStorage.getItem('userId')
+      const response = await axios.get(`https://deluxedirt-us.backendless.app/api/data/users/${userId}`, {
+        headers: {
+          'user-token': tokenUser
+        }
+      })
+      set({ dataUser: response.data })
+    } catch (error) {
+      console.log(error)
     }
   }
 }))
