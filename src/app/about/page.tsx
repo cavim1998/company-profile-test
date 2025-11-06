@@ -8,17 +8,27 @@ const AboutPage = () => {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="text-center py-20 bg-gray-50 px-4  bg-[url('/images/about-us.jpg')] bg-cover bg-center">
-        <h1 className="text-4xl font-bold text-black mb-4">
-          Driving Indonesia Forward, Together.
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-          Grab is more than just a super app — we’re a movement empowering people, businesses,
-          and communities through technology.
-        </p>
-        <Button className="bg-[#00b14f] text-white rounded-full px-6 py-3 hover:bg-[#009444]">
-          Explore Our Mission
-        </Button>
+      <section className="relative h-[324px] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <Image
+          src='/images/about-us.jpg'
+          alt='Grab About Us'
+          className="object-cover object-center z-0"
+          fetchPriority="high"
+          fill
+          priority
+        />
+        <div className="absolute">
+          <h1 className="text-4xl font-bold text-black mb-4">
+            Driving Indonesia Forward, Together.
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+            Grab is more than just a super app — we’re a movement empowering people, businesses,
+            and communities through technology.
+          </p>
+          <Button className="bg-[#00b14f] text-white rounded-full px-6 py-3 hover:bg-[#009444]">
+            Explore Our Mission
+          </Button>
+        </div>
       </section>
 
       {/* Our Story */}
