@@ -60,6 +60,7 @@ const TeamsPage = () => {
                       width={96}
                       height={96}
                       className="rounded-full mb-4 object-cover"
+                      unoptimized
                     />
                     <CardTitle className="text-lg font-semibold">
                       {user.name.first} {user.name.last}

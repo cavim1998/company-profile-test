@@ -66,6 +66,7 @@ export function TestimonialsSection() {
                       width={80}
                       height={80}
                       className="rounded-full object-cover"
+                      unoptimized
                     />
                     <h3 className="font-semibold text-gray-900">{user.name.first}</h3>
                     <p className="text-sm text-gray-500">{user.location.city}</p>
