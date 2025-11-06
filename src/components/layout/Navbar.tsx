@@ -17,7 +17,7 @@ const Navbar = () => {
       const token = localStorage.getItem('token')
       setTokenUser(token || '')
     })
-  }, [])
+  })
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -26,6 +26,13 @@ const Navbar = () => {
     { label: "Teams", href: "/teams" },
     { label: "Blog", href: "/blog" },
   ]
+
+  const logOut = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userId')
+    window.location.reload()
+    setMobileOpen(false)
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
@@ -71,14 +78,19 @@ const Navbar = () => {
               </Button>
             </Link> :
             
-            <Link href="/blog/create">
-              <Button
-                variant="outline"
-                className="rounded-full border-[#00B14F] text-[#00B14F] hover:bg-[#00B14F] hover:text-white transition"
-              >
-                Create Blog
+            <div className="flex items-center gap-4">
+              <Link href="/blog/create">
+                <Button
+                  variant="outline"
+                  className="rounded-full border-[#00B14F] text-[#00B14F] hover:bg-[#00B14F] hover:text-white transition"
+                >
+                  Create Blog
+                </Button>
+              </Link>
+              <Button className="bg-[#00B14F] text-white rounded-full hover:bg-[#009444] transition" onClick={() => logOut()}>
+                Log Out
               </Button>
-            </Link>
+            </div>
           }
         </div>
 
@@ -122,11 +134,16 @@ const Navbar = () => {
               </Button>
             </Link> :
 
-            <Link href="/blog/create" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-[#00B14F] text-white rounded-full hover:bg-[#009444] transition">
-                Create Blog
+            <div className="flex flex-col items-center gap-4">
+              <Link href="/blog/create" className="w-full" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-[#00B14F] text-white rounded-full hover:bg-[#009444] transition">
+                  Create Blog
+                </Button>
+              </Link>
+              <Button variant="outline" className="w-full bg-[#00B14F] text-white rounded-full hover:bg-[#009444] transition" onClick={() => logOut()}>
+                Log Out
               </Button>
-            </Link>
+            </div>
           }
         </div>
       )}
